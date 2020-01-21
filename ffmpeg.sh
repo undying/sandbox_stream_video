@@ -1,7 +1,5 @@
 #! /bin/bash
 
-src=${1:-~/Videos/}
-
 function ffmpeg_rtmp(){
   local file="${1}"
 
@@ -27,13 +25,17 @@ function ffmpeg_mpegts(){
 }
 
 
-while getopt 'rm' ARG;do
+while getopts 'i:rm' ARG;do
+  echo "${ARG}"
   case ${ARG} in
     r)
       play_fn=ffmpeg_rtmp
       ;;
     m)
       play_fn=ffmpeg_mpegts
+      ;;
+    i)
+      src="${OPTARG}"
       ;;
     *)
       echo "Usage: ${0} -[r|m] stream as rtmp or mpegts (default: mpegts)"
@@ -42,6 +44,7 @@ while getopt 'rm' ARG;do
 done
 
 play_fn=${play_fn:-ffmpeg_mpegts}
+src=${src:-~/Videos}
 
 if [[ -f "${src}" ]];then
   eval ${play_fn} \"${src}\"
