@@ -4,7 +4,9 @@ function ffmpeg_rtmp(){
   local file="${1}"
 
   ffmpeg \
+    -re \
     -i "${file}" \
+    -c:v copy \
     -f flv \
     "rtmp://127.0.0.1/live/video.flv"
 }
@@ -19,7 +21,7 @@ function ffmpeg_mpegts(){
     -re \
     -i "${file}" \
     -bsf:v h264_mp4toannexb \
-    -c copy \
+    -c:v copy \
     -f mpegts \
     "http://127.0.0.1:8000/publish/"
 }
