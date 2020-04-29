@@ -14,6 +14,8 @@ ENV deps_runtime="\
   ca-certificates \
   "
 
+ENV deps_runtime_dlna="minidlna"
+
 ENV deps_build_nginx="\
   libgeoip-dev \
   zlib1g-dev \
@@ -35,6 +37,7 @@ RUN set -x \
   && apt-get install -y --no-install-recommends \
     ${deps_build} \
     ${deps_runtime} \
+    ${deps_runtime_dlna} \
     ${deps_build_nginx} \
     ${deps_runtime_nginx}
 

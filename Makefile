@@ -1,5 +1,5 @@
 
-NGINX_IMAGE := rtmp_nginx
+IMAGE := media_server
 NGINX_STATIC_PATH := $(NGINX_STATIC_PATH)
 ifneq (NGINX_STATIC_PATH,)
 	NGINX_STATIC_VOLUME := -v "$(NGINX_STATIC_PATH)":/var/www/static:ro
@@ -8,23 +8,30 @@ endif
 nginx: nginx_build
 	docker run \
 		--rm -it \
-		--name $(NGINX_IMAGE) \
+		--name $@ \
 		-p 1935:1935 \
 		-p 8000:8000 \
-		$(NGINX_IMAGE)
+		$(IMAGE)
 
 nginx_static: nginx_build
 	docker run \
 		--rm -it \
-		--name $(NGINX_IMAGE) \
+		--name $@ \
 		$(NGINX_STATIC_VOLUME) \
 		-p 1935:1935 \
 		-p 8000:8000 \
-		$(NGINX_IMAGE)
+		$(IMAGE) \
+		static.sh
+
+server_dlna: nginx_build
+	docker run \
+		--rm -it \
+		--name $@ \
+		$(NGINX_STATIC_VOLUME) \
+		-p 8200:8200 \
+		$(IMAGE) \
+		dlna.sh
 
 nginx_build:
-	docker build -t $(NGINX_IMAGE) .
-
-nginx_exec:
-	docker exec -it $(NGINX_IMAGE) bash
+	docker build -t $(IMAGE) .
 
